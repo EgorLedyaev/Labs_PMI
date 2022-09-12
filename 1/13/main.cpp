@@ -1,9 +1,4 @@
-//
-// Created by user on 12.09.2022.
-//
-
-//Перевод скорости в другую единицу измерения
-
+//Перевод скорости float в другую единицу измерения
 #include <iostream>
 #include <Windows.h>
 #include <cmath>
@@ -11,7 +6,7 @@ using namespace std;
 
 //Функция для принятия и проверки ввода скорости
 
-int speed(){
+float speed(){
     //Используем дескриптор консоли
     HANDLE  hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -23,7 +18,7 @@ int speed(){
     while (true){
         //Вводим скорость
         cout <<"Введите скорость" << endl;
-        int speed;
+        float speed;
         cin >> speed;
 
         //Проверяем на корректность ввода
@@ -60,11 +55,12 @@ int unit(){
         cout <<"1 - метры в секунду" << endl;
         cout <<"2 - километры в час" << endl;
         cout <<"3 - мили в час" << endl;
+        cout <<"4 - узлы" << endl;
         int unit;
         cin >> unit;
 
         //Проверяем на корректность ввода
-        if (unit <= 0 || unit > 3){
+        if (unit <= 0 || unit > 4){
             FlushConsoleInputBuffer(hConsole);
             SetConsoleTextAttribute(hConsole, col);
             cout << "Неверный формат единицы измерения!" << endl;
@@ -97,11 +93,12 @@ int unit2(){
         cout <<"1 - метры в секунду" << endl;
         cout <<"2 - километры в час" << endl;
         cout <<"3 - мили в час" << endl;
+        cout <<"4 - узлы" << endl;
         int unit2;
         cin >> unit2;
 
         //Проверяем на корректность ввода
-        if (unit2 <= 0 || unit2 > 3){
+        if (unit2 <= 0 || unit2 > 4){
             FlushConsoleInputBuffer(hConsole);
             SetConsoleTextAttribute(hConsole, col);
             cout << "Неверный формат единицы измерения!" << endl;
@@ -118,19 +115,19 @@ int unit2(){
 }
 
 int main(){
-    SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);
-
     //Используем дескриптор консоли
     HANDLE  hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
 
     //Меняем цвет и формат шрифта
     int col=12;
     SetConsoleTextAttribute(hConsole, 15);
 
     //Вводим скорость
-    int speed_t = speed();
+    float speed_t = speed();
 
     //Вводим единицу измерения
     int unit_t = unit();
@@ -139,27 +136,54 @@ int main(){
     int unit2_t = unit2();
 
     //Переводим скорость
-    if (unit_t == 1 && unit2_t == 2){
-        cout << "Скорость в километрах в час: " << speed_t * 3.6 << endl;
+    float speed2_t = speed_t;
+    if (unit_t == 1){
+        if (unit2_t == 2){
+            speed2_t = speed_t * 3.6;
+        }
+        else if (unit2_t == 3){
+            speed2_t = speed_t * 2.23694;
+        }
+        else if (unit2_t == 4){
+            speed2_t = speed_t * 1.94384;
+        }
     }
-    else if (unit_t == 1 && unit2_t == 3){
-        cout << "Скорость в милях в час: " << speed_t * 2.23694 << endl;
+    else if (unit_t == 2){
+        if (unit2_t == 1){
+            speed2_t = speed_t / 3.6;
+        }
+        else if (unit2_t == 3){
+            speed2_t = speed_t * 0.621371;
+        }
+        else if (unit2_t == 4){
+            speed2_t = speed_t * 0.539957;
+        }
     }
-    else if (unit_t == 2 && unit2_t == 1){
-        cout << "Скорость в метрах в секунду: " << speed_t / 3.6 << endl;
+    else if (unit_t == 3){
+        if (unit2_t == 1){
+            speed2_t = speed_t / 2.23694;
+        }
+        else if (unit2_t == 2){
+            speed2_t = speed_t / 0.621371;
+        }
+        else if (unit2_t == 4){
+            speed2_t = speed_t * 0.868976;
+        }
     }
-    else if (unit_t == 2 && unit2_t == 3){
-        cout << "Скорость в милях в час: " << speed_t / 1.60934 << endl;
+    else if (unit_t == 4){
+        if (unit2_t == 1){
+            speed2_t = speed_t / 1.94384;
+        }
+        else if (unit2_t == 2){
+            speed2_t = speed_t / 0.539957;
+        }
+        else if (unit2_t == 3){
+            speed2_t = speed_t / 0.868976;
+        }
     }
-    else if (unit_t == 3 && unit2_t == 1){
-        cout << "Скорость в метрах в секунду: " << speed_t / 2.23694 << endl;
-    }
-    else if (unit_t == 3 && unit2_t == 2){
-        cout << "Скорость в километрах в час: " << speed_t * 1.60934 << endl;
-    }
-    else{
-        cout << "Скорость не изменилась" << endl;
-    }
+
+    //Выводим результат
+    cout << "Результат: " << speed2_t << endl;
 
     return 0;
 }
