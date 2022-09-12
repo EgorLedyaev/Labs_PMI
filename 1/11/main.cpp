@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
         string answer;
         cin >> answer;
         if (answer == "n"){
-            break;
+            return 0;
         }
         cin.clear();
     }
