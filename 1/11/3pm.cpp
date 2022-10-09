@@ -9,7 +9,7 @@ int check_n(){
     while (true){
         cout <<"Введите размер вектора:";
         string n;
-        //ввод с помощью getline
+        //ввод с помощью getlines
         getline(cin, n);
         //проверяем, что в строке содержится только число int
         if (n.find_first_not_of("0123456789") != string::npos || n.empty()){
@@ -39,7 +39,7 @@ int check_el(int i){
             cout << "Неверный формат числа!" << endl;
         }
         else{
-            return stof(el);
+            return stoi(el);
         }
     }
 }
@@ -54,10 +54,10 @@ vector<int> input_vector(int n){
 }
 
 //функция для вывода элементов вектора до сортировки
-void print_vector(vector<int> v){
+void print_vector(const vector<int>& v){
     cout << "Вектор до сортировки: ";
-    for (int i = 0; i < v.size(); i++){
-        cout << v[i] << ' ';
+    for (int i : v){
+        cout << i << ' ';
     }
     cout << endl;
 }
@@ -76,10 +76,10 @@ void bubble_sort(vector<int> &v){
 }
 
 //функция для вывода элементов вектора после сортировки
-void print_vector_sorted(vector<int> v){
+void print_vector_sorted(const vector<int>& v){
     cout << "Вектор после сортировки: ";
-    for (int i = 0; i < v.size(); i++){
-        cout << v[i] << ' ';
+    for (int i : v){
+        cout << i << ' ';
     }
     cout << endl;
 }
