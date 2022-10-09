@@ -44,22 +44,28 @@ int check_el(int i){
     }
 }
 
-//функция для ввода элементов вектора
-vector<int> input_vector(int n){
-    vector<int> v;
+//функция для заполнения вектора рандомными значениями
+void fill_vector(vector<int> &v, int n){
     for (int i = 0; i < n; i++){
-        v.push_back(check_el(i));
+        v.push_back(rand() % 100);
     }
-    return v;
 }
 
-//функция для вывода элементов вектора до сортировки
-void print_vector(const vector<int>& v){
+//функция для вывода вектора, если он больше 10 элементов, то выводятся только первые 10
+void print_vector(vector<int> &v){
     cout << "Вектор до сортировки: ";
-    for (int i : v){
-        cout << i << ' ';
+    if (v.size() > 10){
+        for (int i = 0; i < 10; i++){
+            cout << v[i] << ' ';
+        }
+        cout << "..." << endl;
     }
-    cout << endl;
+    else{
+        for (int i : v){
+            cout << i << ' ';
+        }
+        cout << endl;
+    }
 }
 
 //функция для сортировки пузырьком
@@ -75,13 +81,21 @@ void bubble_sort(vector<int> &v){
     }
 }
 
-//функция для вывода элементов вектора после сортировки
-void print_vector_sorted(const vector<int>& v){
+//функция для вывода элементов вектора после сортировки, если он больше 10 элементов, то выводятся только первые 10
+void print_vector_after(vector<int> &v){
     cout << "Вектор после сортировки: ";
-    for (int i : v){
-        cout << i << ' ';
+    if (v.size() > 10){
+        for (int i = 0; i < 10; i++){
+            cout << v[i] << ' ';
+        }
+        cout << "..." << endl;
     }
-    cout << endl;
+    else{
+        for (int i : v){
+            cout << i << ' ';
+        }
+        cout << endl;
+    }
 }
 
 //функция для запроса хочет ли пользователь продолжить работу с программой
@@ -107,10 +121,12 @@ int main()
     setlocale(LC_ALL, "");
     while (true){
         int n = check_n();
-        vector<int> v = input_vector(n);
+
+        vector<int> v;
+        fill_vector(v, n);
         print_vector(v);
         bubble_sort(v);
-        print_vector_sorted(v);
+        print_vector_after(v);
         if (!continue_work()){
             break;
         }
