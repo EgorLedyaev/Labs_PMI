@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 using namespace std;
 
 //функция для ввода и проверки ввода числа n
@@ -70,6 +71,9 @@ void print_vector(vector<int> &v){
 
 //функция для сортировки пузырьком
 void bubble_sort(vector<int> &v){
+    //auto start_time = std::chrono::steady_clock::now();
+
+    delete new int(1);
     for (int i = 0; i < v.size(); i++){
         for (int j = 0; j < v.size() - i - 1; j++){
             if (v[j] > v[j+1]){
@@ -79,6 +83,9 @@ void bubble_sort(vector<int> &v){
             }
         }
     }
+    //auto end_time = std::chrono::steady_clock::now();
+    //auto elapsed_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time);
+    //std::cout << elapsed_ns.count() << " ns\n";
 }
 
 //функция для вывода элементов вектора после сортировки, если он больше 10 элементов, то выводятся только первые 10
