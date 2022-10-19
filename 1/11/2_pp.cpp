@@ -4,7 +4,7 @@
 #include<vector>
 #include<cmath>
 #include <cfloat>
-#include <Windows.h>
+//#include <Windows.h>
 
 using namespace std;
 
@@ -15,13 +15,13 @@ long double check_x(){
         string x;
         //ввод с помощью getlines
         getline(cin, x);
-        //проверяем, что в строке содержится только число int
+        //проверяем, что в строке содержится только число
         if (x.find_first_not_of("0123456789.-") != string::npos || x.empty()){
             cout << "Неверный формат числа!" << endl;
         }
         else{
             //проверяем, что число не отрицательное
-            if (stold(x) >= 1 and stold(x) <= -1 and stold(x) == 0){
+            if (stold(x) >= 1 or stold(x) <= -1 or stold(x) == 0){
                 cout << "Число не может быть меньше -1, равно 0 и быть больше 1" << endl;
             }
             else{
@@ -38,7 +38,7 @@ long double check_a(){
         string a;
         //ввод с помощью getlines
         getline(cin, a);
-        //проверяем, что в строке содержится только число int
+        //проверяем, что в строке содержится только число
         if (a.find_first_not_of("0123456789.-") != string::npos || a.empty()){
             cout << "Неверный формат числа!" << endl;
         }
@@ -97,10 +97,10 @@ void push_back_vectors(vector<long double> &a, vector<long double> &s, vector<lo
 
 
 int main() {
-    SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);
+    //SetConsoleCP(1251);
+    //SetConsoleOutputCP(1251);
 
-    const long long one = 1;
+
     int f = 0;
     long long i = 0, fact = 1, n = 0;
     long double x0=LDBL_MAX, x, alpha, a0, a = 0.0, s = 0.0, r=LDBL_MAX;
@@ -115,7 +115,7 @@ int main() {
         if (x == x0) {            //Проверка для старого параметра
             cout << "Параметр x не изменился" << endl;
             if (alpha == long(alpha)) { //Определение, целое ли Альфа?
-                cout << "Альфа целое число" << endl;
+                //cout << "Альфа целое число" << endl;
                 if (A.size() < alpha) {//Проверка, нужны ли новые данные?
                     cout << "Старые данные:" << endl;
                     for (n = 0; n <= (A.size() - 1); n++) { //Вывод старых данных
@@ -124,14 +124,14 @@ int main() {
 
                     s = S[S.size() - 1];
                     cout << "Новые данные:" << endl;
-                    for (n = A.size(); n <= (long (alpha) - one); n++) {
+                    for (n = A.size(); n <= (long (alpha) - 1); n++) {
                         //Подсчет новых данных
-                        fact *= (n + one);
+                        fact *= (n + 1);
 
-                        a0 = calcElemPosled(x, n + one, fact);
+                        a0 = calcElemPosled(x, n + 1, fact);
                         s += a0;
 
-                        a = calcElemPosled(x, n + 2 * one, fact * (n + 2 * one));
+                        a = calcElemPosled(x, n + 2, fact * (n + 2));
                         r = a / s;
 
                         output(n + 1, a0, s, abs(r)); //Вывод новых данных
@@ -146,7 +146,7 @@ int main() {
                 }
             }
             else {  //Заходим сюда, если Альфа - погрешность
-                cout << "Альфа погрешность" << endl;
+                //cout << "Альфа погрешность" << endl;
                 n = 0;
                 while ((R[n] >= alpha) && (n < A.size() - 1)) { //Выводим старые данные
                     output(N[n], A[n], S[n], R[n]);
@@ -164,7 +164,7 @@ int main() {
                         a0 = calcElemPosled(x, n, fact);
                         s += a0;
 
-                        a = calcElemPosled(x, n + one, fact * (n + one));
+                        a = calcElemPosled(x, n + 1, fact * (n + 1));
                         r = a / s;
 
                         output(n, a0, s, abs(r));   //Вывод новых данных
@@ -184,7 +184,7 @@ int main() {
 
                     a0 = calcElemPosled(x, i, fact); //Подсчет новых данных
                     s += a0;
-                    a = calcElemPosled(x, i + one, fact * (i + one));
+                    a = calcElemPosled(x, i + 1, fact * (i + 1));
                     r = a / s;
 
                     output(i, a0, s, abs(r));         //Вывод новых данных
@@ -199,7 +199,7 @@ int main() {
                     a0 = calcElemPosled(x, i, fact);
                     s += a0;
 
-                    a = calcElemPosled(x, i + one, fact * (i + one));
+                    a = calcElemPosled(x, i + 1, fact * (i + 1));
                     r = a / s;
 
                     output(i, a0, s, abs(r));  //Вывод новых данных
