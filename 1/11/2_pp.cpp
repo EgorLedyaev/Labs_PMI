@@ -43,7 +43,7 @@ long double check_a(){
             cout << "Неверный формат числа!" << endl;
         }
         else{
-                return stold(a);
+            return stold(a);
 
         }
     }
@@ -77,10 +77,6 @@ void output(long long n, long double a, long double s, long double r) {
 }
 
 
-//функция для определения целое ли альфа
-bool is_int(long double a){
-    return (a == (int)a);
-}
 
 //очистка векторов a, s, r, n
 void clear_vectors(vector<long double> &a, vector<long double> &s, vector<long double> &r, vector<long long> &n){
@@ -115,16 +111,19 @@ int main() {
     while (true){
         x = check_x();
         alpha = check_a();
-        if (x == x0) {            //Проверка для старого параметра
-            if (is_int(a)) { //Определение, целое ли Альфа?
-                if (A.size() < alpha) {//Проверка, нужны ли новые данные?
 
+        if (x == x0) {            //Проверка для старого параметра
+            cout << "Параметр x не изменился" << endl;
+            if (alpha == long(alpha)) { //Определение, целое ли Альфа?
+                cout << "Альфа целое число" << endl;
+                if (A.size() < alpha) {//Проверка, нужны ли новые данные?
+                    cout << "Старые данные:" << endl;
                     for (n = 0; n <= (A.size() - 1); n++) { //Вывод старых данных
                         output(N[n], A[n], S[n], R[n]);
                     }
 
                     s = S[S.size() - 1];
-
+                    cout << "Новые данные:" << endl;
                     for (n = A.size(); n <= (long (alpha) - one); n++) {
                         //Подсчет новых данных
                         fact *= (n + one);
@@ -140,31 +139,34 @@ int main() {
                     }
                 }
                 else {
+                    cout << "Старые данные:" << endl;
                     for (n = 0; n < alpha; n++) {    //Вывод старых данных
                         output(N[n], A[n], S[n], R[n]);
                     }
                 }
             }
             else {  //Заходим сюда, если Альфа - погрешность
+                cout << "Альфа погрешность" << endl;
                 n = 0;
                 while ((R[n] >= alpha) && (n < A.size() - 1)) { //Выводим старые данные
                     output(N[n], A[n], S[n], R[n]);
                     n++;
                 }
                 output(N[n], A[n], S[n], R[n]); //Первая погрешность меньше введенной, если прошлый цикл закончился по 1-ому условию
-                if (R[n] > alpha) {            //Проверяем, нужны ли новые вычисления
+                if (R[n] > alpha) {            //Проверяем, нужны ли новые
+                    cout << "Новые данные:" << endl;
                     s = S[n];
                     r = R[n];
                     n++;
                     while (abs(r) > alpha) {   //Подсчет новых данных
                         fact *= n;
-                        
+
                         a0 = calcElemPosled(x, n, fact);
                         s += a0;
-                        
+
                         a = calcElemPosled(x, n + one, fact * (n + one));
                         r = a / s;
-                        
+
                         output(n, a0, s, abs(r));   //Вывод новых данных
                         push_back_vectors(A, S, R, N, a0, s, abs(r), n); //Запись новых данных в вектора
                         n++;
@@ -179,12 +181,12 @@ int main() {
             if (alpha == long(alpha)) { //Проверяем, целое ли Альфа?
                 for (i = 1; i <= long(alpha); i++) {
                     fact *= i;
-                    
+
                     a0 = calcElemPosled(x, i, fact); //Подсчет новых данных
                     s += a0;
                     a = calcElemPosled(x, i + one, fact * (i + one));
                     r = a / s;
-                    
+
                     output(i, a0, s, abs(r));         //Вывод новых данных
                     push_back_vectors(A, S, R, N, a0, s, abs(r), i); //Запись новых данных в вектора
                 }
@@ -193,13 +195,13 @@ int main() {
                 i = 1;
                 while (abs(r) >= alpha) {     //Подсчет новых данных
                     fact *= i;
-                    
+
                     a0 = calcElemPosled(x, i, fact);
                     s += a0;
-                    
+
                     a = calcElemPosled(x, i + one, fact * (i + one));
                     r = a / s;
-                    
+
                     output(i, a0, s, abs(r));  //Вывод новых данных
                     push_back_vectors(A, S, R, N, a0, s, abs(r), i); //Запись новых данных в вектора
                     i++;
