@@ -72,6 +72,10 @@ long double calcElemPosled(long double x, long long n, long long factor){
     return (pow(2, n / 2) * sin(2 * asin(1) * n / 4) * pow(x, n)) / factor;
 }
 
+long double calcElemPosled(long double x, long n, long long factor){
+    return (pow(2, n / 2) * sin(2 * asin(1) * n / 4) * pow(x, n)) / factor;
+}
+
 void output(long long n, long double a, long double s, long double r) {
     cout << "n = " << setw(2) << n << " | " << "An = " << setw(5) << a << " | " << "S = " << setw(5) << s << " | " << "En = " << setw(5) << r << '\n';
 }
@@ -153,7 +157,7 @@ int main() {
                     n++;
                 }
                 output(N[n], A[n], S[n], R[n]); //Первая погрешность меньше введенной, если прошлый цикл закончился по 1-ому условию
-                if (R[n] > alpha) {            //Проверяем, нужны ли новые
+                if (R[n] > alpha + r) {            //Проверяем, нужны ли новые
                     cout << "Новые данные:" << endl;
                     s = S[n];
                     r = R[n];
@@ -171,7 +175,34 @@ int main() {
                         push_back_vectors(A, S, R, N, a0, s, abs(r), n); //Запись новых данных в вектора
                         n++;
                     }
+                    long double r_old = r;
+                    fact *= i;
+
+                    a0 = calcElemPosled(x, i, fact);
+                    s += a0;
+
+                    a = calcElemPosled(x, i + 1, fact * (i + 1));
+                    r = a / s;
+
+                    output(i, a0, s, abs(r));  //Вывод новых данных
+                    push_back_vectors(A, S, R, N, a0, s, abs(r), i); //Запись новых данных в вектора
+                    i++;
+                    r = LDBL_MAX;
+                    while (abs(r) >= alpha + abs(r_old)) {     //Подсчет новых данных
+                        fact *= i;
+
+                        a0 = calcElemPosled(x, i, fact);
+                        s += a0;
+
+                        a = calcElemPosled(x, i + 1, fact * (i + 1));
+                        r = a / s;
+
+                        output(i, a0, s, abs(r));  //Вывод новых данных
+                        push_back_vectors(A, S, R, N, a0, s, abs(r), i); //Запись новых данных в вектора
+                        i++;
+                    }
                 }
+
             }
         }
         else {         //Заходим сюда если параметр новый
@@ -193,6 +224,8 @@ int main() {
             }
             else {  //Заходим сюда, если Альфа - погрешность
                 i = 1;
+                r = LDBL_MAX;
+
                 while (abs(r) >= alpha) {     //Подсчет новых данных
                     fact *= i;
 
@@ -206,6 +239,33 @@ int main() {
                     push_back_vectors(A, S, R, N, a0, s, abs(r), i); //Запись новых данных в вектора
                     i++;
                 }
+                long double r_old = r;
+                fact *= i;
+
+                a0 = calcElemPosled(x, i, fact);
+                s += a0;
+
+                a = calcElemPosled(x, i + 1, fact * (i + 1));
+                r = a / s;
+
+                output(i, a0, s, abs(r));  //Вывод новых данных
+                push_back_vectors(A, S, R, N, a0, s, abs(r), i); //Запись новых данных в вектора
+                i++;
+                r = LDBL_MAX;
+                while (abs(r) >= alpha + abs(r_old)) {     //Подсчет новых данных
+                    fact *= i;
+
+                    a0 = calcElemPosled(x, i, fact);
+                    s += a0;
+
+                    a = calcElemPosled(x, i + 1, fact * (i + 1));
+                    r = a / s;
+
+                    output(i, a0, s, abs(r));  //Вывод новых данных
+                    push_back_vectors(A, S, R, N, a0, s, abs(r), i); //Запись новых данных в вектора
+                    i++;
+                }
+
             }
             x0 = x; //Запись старого X для последующей проверки
         }
