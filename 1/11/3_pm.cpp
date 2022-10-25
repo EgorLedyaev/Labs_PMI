@@ -36,7 +36,7 @@ int check_el(int i){
         getline(cin, el);
         //проверяем, что в строке содержится только число int или float
         //проверяем не пустое ли значение
-        if (el.find_first_not_of("0123456789.") != string::npos || el.empty()){
+        if (el.find_first_not_of("0123456789") != string::npos || el.empty()){
             cout << "Неверный формат числа!" << endl;
         }
         else{
@@ -130,7 +130,27 @@ int main()
         int n = check_n();
 
         vector<int> v;
-        fill_vector(v, n);
+        //спрашиваем у пользователя хочет он сам ввести или заполнить рандомными значениями
+        while (true){
+            cout << "Хотите заполнить вектор рандомными значениями? (y/n): ";
+            string answer;
+            getline(cin, answer);
+            if (answer == "y"){
+                fill_vector(v, n);
+                break;
+            }
+            else if (answer == "n"){
+                for (int i = 0; i < n; i++){
+                    int el = check_el(i);
+                    v.push_back(el);
+                }
+                break;
+            }
+            else{
+                cout << "Неверный формат ответа!" << endl;
+
+            }
+        }
         print_vector(v);
         bubble_sort(v);
         print_vector_after(v);
