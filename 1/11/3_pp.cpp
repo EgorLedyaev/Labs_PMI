@@ -57,9 +57,14 @@ int check_el(int i){
 }
 
 //функция для заполнения вектора рандомными значениями
-void fill_vector(vector<int> &v, int n){
+void fill_vector(vector<int> &v, int n, bool random_flag,int random_max){
     for (int i = 0; i < n; i++){
-        v.push_back(rand() % 100);
+        if (random_flag){
+            v.push_back(random(0,random_max));
+        }
+        else {
+            v.push_back(rand() % 100);
+        }
     }
 }
 
@@ -176,6 +181,19 @@ int main()
     setlocale(LC_ALL, "");
     unsigned int bubble_time;
     unsigned int quick_time;
+    unsigned int random_max = 100;
+    bool random_flag;
+
+    cout << "Use mersenne vortex? (y/n): ";
+    string answer;
+    getline(cin, answer);
+    if (answer == "y"){
+        random_flag = true;
+    }
+    else{
+        random_flag = false;
+    }
+
     while (true){
         int n = check_n();
 
@@ -186,7 +204,7 @@ int main()
             string answer;
             getline(cin, answer);
             if (answer == "y"){
-                fill_vector(v, n);
+                fill_vector(v, n,random_flag, random_max);
                 break;
             }
             else if (answer == "n"){
