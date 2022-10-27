@@ -57,7 +57,7 @@ int check_el(int i){
 }
 
 //функция для заполнения вектора рандомными значениями
-void fill_vector(vector<int> &v, int n, bool random_flag,int random_max){
+void fill_vector(vector<int> &v, int &n, bool random_flag,int random_max){
     for (int i = 0; i < n; i++){
         if (random_flag){
             v.push_back(random(0,random_max));
@@ -204,7 +204,24 @@ int main()
             string answer;
             getline(cin, answer);
             if (answer == "y"){
-                fill_vector(v, n,random_flag, random_max);
+                //уточняем у пользователя какое заполнение он хочет обычное рандомное или обратноотсортированный массив
+                while (true){
+                    cout << "Хотите заполнить вектор обычными рандомными значениями или обратноотсортированным массивом? (1/2): ";
+                    string answer;
+                    getline(cin, answer);
+                    if (answer == "1"){
+                        fill_vector(v, n,random_flag, random_max);
+                        break;
+                    }
+                    else if (answer == "2"){
+                        fill_vector(v, n,random_flag, random_max);
+                        sort(v.begin(), v.end(), greater<int>());
+                        break;
+                    }
+                    else{
+                        cout << "Неверный формат ответа!" << endl;
+                    }
+                }
                 break;
             }
             else if (answer == "n"){
