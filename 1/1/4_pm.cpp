@@ -22,14 +22,20 @@ void delete_space(vector<char>& v)
     }
 }
 
-//функция для принятия строки из файла input.txt в вектор символов
-void get_string(vector<char>& v)
+//функция для принятия строки из файла в вектор символов
+void input(vector<char>& v, ifstream& fin)
 {
-    ifstream input("input.txt");
-    string str;
-    getline(input, str);
-    copy(str.begin(), str.end(), back_inserter(v));
+    char c;
+    while (fin.get(c))
+    {
+        if (c == '\n')
+        {
+            break;
+        }
+        v.push_back(c);
+    }
 }
+
 
 
 //функция для записи строки в файл output.txt
@@ -53,7 +59,8 @@ void write_string_to_file(vector<char>& v)
 int main()
 {
     vector<char> v;
-    get_string(v);
+    ifstream fin("input.txt");
+    input(v, fin);
     delete_space(v);
     write_string_to_file(v);
     return 0;
