@@ -98,16 +98,15 @@ def print_result(polyline):
     print()
 
 
-# основная программа
-while True:
-    # прием числа точек
-    n = input_number()
-    # прием координат точек
-    points = [input_point() for i in range(n)]
-    # построение ломаной
-    polyline = polyline(points)
-    # вывод результата
-    print_result(polyline)
-    # прием ответа пользователя
-    if not input_answer():
-        break
+def main():
+    while True:
+        n = input_number()
+        points = []
+        for i in range(n):
+            points.append(input_point())
+        print_result(polyline(points))
+        if not input_answer():
+            break
+
+if __name__ == "__main__":
+    main()
