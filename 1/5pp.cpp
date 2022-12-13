@@ -221,7 +221,7 @@ int main()
     while (true) {
         vector<GradeData> gradeDatas;
         string str;
-        //int id;
+        int id;
         if (answer()) {
             ifstream in("input.txt");
             if (!in.is_open()) {
@@ -231,7 +231,7 @@ int main()
             while (getline(in, str)) {
                 if (checkInput(str)) {
                     //input id of group
-                    //id = answer5();
+                    id = answer5();
                     stringstream ss(str);                    
                     string name;
                     ss >> name;
@@ -246,12 +246,12 @@ int main()
             in.close();
         } else {
             //enter id of group
-            //id = answer4();
-            //cout << "Enter the number of students" << endl;
-            //int n;
-            //cin >> n;
+            id = answer4();
+            cout << "Enter the number of students" << endl;
+            int n;
+            cin >> n;
             cin.ignore();
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < n; i++) {
                 while (true) {
                     cout << "Enter the name and grades of the student" << endl;
                     getline(cin, str);
@@ -274,18 +274,18 @@ int main()
         }
         if (answer2()) {
             ofstream out("output.txt");
-            //out << "Group " << id << endl;
+            out << "Group " << id << endl;
             for (auto & gradeData : gradeDatas) {
                 out << gradeData << "Average grade : " << gradeData.getAverageGrade() << endl;
             }
-            //out << "Average grade of the group : " << getAverageGrade(gradeDatas) << endl;
+            out << "Average grade of the group : " << getAverageGrade(gradeDatas) << endl;
             out.close();
         } else {
-            //cout << "id of group : " << id << endl;
+            cout << "id of group : " << id << endl;
             for (auto & gradeData : gradeDatas) {
                 cout << gradeData << "Average grade : " << gradeData.getAverageGrade() << endl;
             }
-            //cout << "Average grade of the group : " << getAverageGrade(gradeDatas) << endl;
+            cout << "Average grade of the group : " << getAverageGrade(gradeDatas) << endl;
         }
 
         if (!answer3()) {
