@@ -11,140 +11,258 @@
 //the last name must contain only letters
 //grades must contain only digits
 
-//name of the class : grade data
-//input format : Name Evaluation1 Evaluation2 Evaluation3
-//input example : Ivanov 3 4 5
-//output : Output average grade
-//output example : Average grade : 4
+//example input
+//group : 6101
+//Number of students : 3
+//Ivanov 3 4 5
+//Petrov 5 5 5
+//Sidorov 2 3 4
+
+//example output
+//group : 6101
+//Number of students : 3
+//Ivanov 3 4 5 5
+//Petrov 5 5 5
+//Sidorov 2 3 3
+//Average grade Ivanov : 4,25
+//Average grade Petrov : 5
+//Average grade Sidorov : 2,6
+//Average grade group : 3,95
 
 //select writing to file or output to console.
+
+//class for student
+//Here we store the name of the student and the vector of grades, as well as calculate the average grade and store it
+
+//class for group
+//Here we store the group number of students that we will handle and calculate the average grade for the group using the class student
+//output id group, students, student grades, average grade of student, average grade of group
+
+//function if it is an error in the last name of the student offer the user the choice to enter a replacement or replace it with the default value. The last name must begin with a capital letter and contain only the letters
+//function if it is an error in the grade of the student offer the user the choice to enter a replacement or replace it with the default value. The grade must be a number in the range 1-5
+
+//input from file or console
+//output to file or console
+
+//input checks
+
 
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <utility>
 #include <vector>
 #include <algorithm>
-#include <sstream>
+#include <iomanip>
 #include <cctype>
 #include <locale>
-#include <codecvt>
-#include <windows.h>
+#include <sstream>
+#include <iterator>
+#include <numeric>
+#include <functional>
 
 using namespace std;
 
-class GradeData
+class Student
 {
 private:
-    int id;
     string name;
     vector<int> grades;
+    double average_grade;
 public:
-    GradeData() {}
-    GradeData(string name, vector<int> grades) : name(std::move(name)), grades(std::move(grades)) {}
-    GradeData(const GradeData& other) : name(other.name), grades(other.grades) {}
-    GradeData& operator=(const GradeData& other)
+    Student() : name("Default"), grades(3, 0), average_grade(0) {}
+    Student(string name, vector<int> grades) : name(name), grades(grades), average_grade(0) {}
+    Student(const Student& other) : name(other.name), grades(other.grades), average_grade(other.average_grade) {}
+    ~Student() {}
+
+    void set_name(string name) { this->name = name; }
+    void set_grades(vector<int> grades) { this->grades = grades; }
+    void set_average_grade(double average_grade) { this->average_grade = average_grade; }
+
+    string get_name() const { return name; }
+    vector<int> get_grades() const { return grades; }
+    double get_average_grade() const { return average_grade; }
+
+    void calculate_average_grade()
     {
-        if (this != &other)
-        {
-            name = other.name;
-            grades = other.grades;
-        }
-        return *this;
+        average_grade = accumulate(grades.begin(), grades.end(), 0) / (double)grades.size();
     }
-    friend istream& operator>>(istream& in, GradeData& gradeData);
-    friend ostream& operator<<(ostream& out, const GradeData& gradeData);
-    double getAverageGrade() const
+
+    friend istream& operator>>(istream& in, Student& student);
+    friend ostream& operator<<(ostream& out, const Student& student);
+};
+
+class Group
+{
+private:
+    int group_id;
+    int number_of_students;
+    vector<Student> students;
+    double average_grade;
+public:
+    Group() : group_id(0), number_of_students(0), students(0), average_grade(0) {}
+    Group(int group_id, int number_of_students, vector<Student> students) : group_id(group_id), number_of_students(number_of_students), students(students), average_grade(0) {}
+    Group(const Group& other) : group_id(other.group_id), number_of_students(other.number_of_students), students(other.students), average_grade(other.average_grade) {}
+    ~Group() {}
+
+    void set_group_id(int group_id) { this->group_id = group_id; }
+    void set_number_of_students(int number_of_students) { this->number_of_students = number_of_students; }
+    void set_students(vector<Student> students) { this->students = students; }
+    void set_average_grade(double average_grade) { this->average_grade = average_grade; }
+
+    int get_group_id() const { return group_id; }
+    int get_number_of_students() const { return number_of_students; }
+    vector<Student> get_students() const { return students; }
+    double get_average_grade() const { return average_grade; }
+
+    void calculate_average_grade()
     {
         double sum = 0;
-        for (int grade : grades)
+        for (int i = 0; i < students.size(); i++)
         {
-            sum += grade;
+            sum += students[i].get_average_grade();
         }
-        return sum / grades.size();
+        average_grade = sum / (double)students.size();
+    }
+
+    friend istream& operator>>(istream& in, Group& group);
+    friend ostream& operator<<(ostream& out, const Group& group);
+
+    //overload function callculate average grade
+    void calculate_average_grade(vector<Student> students)
+    {
+        double sum = 0;
+        for (int i = 0; i < students.size(); i++)
+        {
+            sum += students[i].get_average_grade();
+        }
+        average_grade = sum / (double)students.size();
     }
 };
 
-istream& operator>>(istream& in, GradeData& gradeData)
+//overloading input and output operators for class Student
+istream& operator>>(istream& in, Student& student)
 {
-    in >> gradeData.name;
-    int grade;
-    while (in >> grade)
+    in >> student.name;
+    for (int i = 0; i < student.grades.size(); i++)
     {
-        gradeData.grades.push_back(grade);
+        in >> student.grades[i];
     }
     return in;
 }
 
-ostream& operator<<(ostream& out, const GradeData& gradeData)
+ostream& operator<<(ostream& out, const Student& student)
 {
-    out << gradeData.name << " ";
-    for (int grade : gradeData.grades)
+    out << student.name << " ";
+    for (int i = 0; i < student.grades.size(); i++)
     {
-        out << grade << " ";
+        out << student.grades[i] << " ";
     }
+    out << student.average_grade;
     return out;
 }
 
-bool isNumber(const string& str)
+//overloading input and output operators for class Group
+istream& operator>>(istream& in, Group& group)
 {
-    for (char i : str)
+    in >> group.group_id;
+    in >> group.number_of_students;
+    for (int i = 0; i < group.students.size(); i++)
     {
-        if (!isdigit(i))
-        {
-            return false;
-        }
+        in >> group.students[i];
     }
-    return true;
+    return in;
 }
 
-bool isLetter(const string& str)
+ostream& operator<<(ostream& out, const Group& group)
 {
-    for (char i : str)
+    out << "group : " << group.group_id << endl;
+    out << "Number of students : " << group.number_of_students << endl;
+    for (int i = 0; i < group.students.size(); i++)
     {
-        if (!isalpha(i))
-        {
-            return false;
-        }
+        out << group.students[i] << endl;
     }
-    return true;
+    out << "Average grade group : " << group.average_grade << endl;
+    return out;
 }
 
-//function to check the correctness of the input
-bool checkInput(const string& str)
+//overloading function callculate_average_grade for class Student
+void calculate_average_grade(Student& student)
 {
-    vector<string> words;
-    string word;
-    stringstream ss(str);
-    while (ss >> word)
-    {
-        words.push_back(word);
-    }
-    if (words.size() < 2)
-    {
-        return false;
-    }
-    if (!isLetter(words[0]))
-    {
-        return false;
-    }
-    for (int i = 1; i < words.size(); i++)
-    {
-        if (!isNumber(words[i]))
-        {
-            return false;
-        }
-    }
-    return true;
+    student.calculate_average_grade();
 }
 
-//function to answer input from console or file
-bool answer()
+//overloading function callculate_average_grade for class Group
+void calculate_average_grade(Group& group)
 {
-    char answer;
-    cout << "Do you want to read from file? (y/n)" << endl;
+    group.calculate_average_grade();
+}
+
+//function to answer from file or console
+bool input_from_file()
+{
+    string answer;
+    cout << "Do you want to read from file? (y/n) ";
     cin >> answer;
-    if (answer == 'y')
+    if (answer == "y")
+    {
+        return true;
+    }
+    else if (answer == "n")
+    {
+        return false;
+    }
+    else
+    {
+        cout << "Incorrect answer. Try again." << endl;
+        return input_from_file();
+    }
+}
+
+//function to answer to file or console
+bool output_to_file()
+{
+    string answer;
+    cout << "Do you want to write to file? (y/n) ";
+    cin >> answer;
+    if (answer == "y")
+    {
+        return true;
+    }
+    else if (answer == "n")
+    {
+        return false;
+    }
+    else
+    {
+        cout << "Incorrect answer. Try again." << endl;
+        return output_to_file();
+    }
+}
+
+//function to check if the last name is correct
+bool check_name(string name)
+{
+    if (isupper(name[0]))
+    {
+        for (int i = 1; i < name.size(); i++)
+        {
+            if (!isalpha(name[i]))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//function to check if the grade is correct
+bool check_grade(int grade)
+{
+    if (grade >= 1 && grade <= 5)
     {
         return true;
     }
@@ -154,141 +272,272 @@ bool answer()
     }
 }
 
-//function to answer output to console or file
-bool answer2()
+//function to replace the last name if it is incorrect
+string replace_name(string name)
 {
-    char answer;
-    cout << "Do you want to write to file? (y/n)" << endl;
+    string answer;
+    cout << "The last name is incorrect. You enter - " << name <<". Do you want to replace it? (y/n) ";
     cin >> answer;
-    if (answer == 'y')
+    if (answer == "y")
     {
-        return true;
+        cout << "Enter the last name: ";
+        cin >> name;
+        if (check_name(name))
+        {
+            return name;
+        }
+        else
+        {
+            cout << "The last name is incorrect. Try again." << endl;
+            return replace_name(name);
+        }
+    }
+    else if (answer == "n")
+    {
+        return "Default";
     }
     else
     {
-        return false;
+        cout << "Incorrect answer. Try again." << endl;
+        return replace_name(name);
     }
 }
 
-//function to calculate the average grade from group students
-double getAverageGrade(vector<GradeData> gradeDatas)
+//function to replace the grade if it is incorrect
+int replace_grade(int grade)
 {
-    double sum = 0;
-    for (auto & gradeData : gradeDatas)
+    string answer2;
+    cout << "The grade is incorrect. You enter - " << grade <<". Do you want to replace it? (y/n) ";
+    cin >> answer2;
+    if (answer2 == "y")
     {
-        sum += gradeData.getAverageGrade();
+        cout << "Enter the grade: ";
+        cin >> grade;
+        if (check_grade(grade))
+        {
+            return grade;
+        }
+        else
+        {
+            cout << "The grade is incorrect. Try again." << endl;
+            return replace_grade(grade);
+        }
     }
-    return sum / gradeDatas.size();
-}
-
-//function to answer continue or not
-bool answer3()
-{
-    char answer;
-    cout << "Do you want to continue? (y/n)" << endl;
-    cin >> answer;
-    if (answer == 'y')
+    else if (answer2 == "n")
     {
-        return true;
+        return 1;
     }
     else
     {
-        return false;
+        cout << "Incorrect answer. Try again." << endl;
+        return replace_grade(grade);
     }
 }
 
-//function to answer id of group
-int answer4()
+//function to read from file
+void read_from_file(vector<Group>& groups)
 {
-    int answer;
-    cout << "Enter id of group" << endl;
-    cin >> answer;
-    return answer;
+    ifstream in("input.txt");
+    if (in.is_open())
+    {
+        //считываем данные пока не встретим последнюю группу
+        while (!in.eof())
+        {
+            int group_id;
+            in >> group_id;
+            int number_of_students;
+            in >> number_of_students;
+            vector<Student> students;
+            for (int j = 0; j < number_of_students; j++)
+            {
+                string name;
+                in >> name;
+                //cout << name << endl;
+                if (!check_name(name))
+                {
+                    name = replace_name(name);
+                }
+                vector<int> grades;
+                for (int k = 0; k < 3; k++)
+                {
+                    string grade;
+                    in >> grade;
+                    //cout << grade << endl;
+                    if (!isdigit(grade[0]))
+                    {
+                        int grade2 = replace_grade(0);
+                        grades.push_back(grade2);
+                    }
+                    else
+                    {
+                        int grade2 = stoi(grade);
+                        if (!check_grade(grade2))
+                        {
+                            grade2 = replace_grade(grade2);
+                        }
+                        grades.push_back(grade2);
+                    }
+                }
+                Student student(name, grades);
+                student.calculate_average_grade();
+                students.push_back(student);
+            }
+            Group group(group_id, number_of_students, students);
+            group.calculate_average_grade();
+            groups.push_back(group);
+        }
+        in.close();
+    }
+    else
+    {
+        cout << "File is not open." << endl;
+    }
+    in.close();
 }
-//function to take id of group from file
-int answer5()
+
+//function to read from console
+void read_from_console(vector<Group>& groups)
 {
-    int answer;
-    ifstream fin("input.txt");
-    fin >> answer;
-    return answer;
+    int number_of_groups;
+    cout << "Enter the number of groups: ";
+    cin >> number_of_groups;
+    for (int i = 0; i < number_of_groups; i++)
+    {
+        int group_id;
+        cout << "Enter the group id: ";
+        cin >> group_id;
+        int number_of_students;
+        cout << "Enter the number of students: ";
+        cin >> number_of_students;
+        vector<Student> students;
+        for (int j = 0; j < number_of_students; j++)
+        {
+            string name;
+            cout << "Enter the last name: ";
+            cin >> name;
+            if (!check_name(name))
+            {
+                name = replace_name(name);
+            }
+            vector<int> grades;
+            for (int k = 0; k < 3; k++)
+            {
+                string grade;
+                cout << "Enter the grade: ";
+                cin >> grade;
+                //если не число, то спрашиваем заменить или нет
+                if (!isdigit(grade[0]))
+                {
+                    int grade2 = replace_grade(0);
+                    grades.push_back(grade2);
+                }
+                else
+                {
+                    int grade2 = stoi(grade);
+                    if (!check_grade(grade2))
+                    {
+                        grade2 = replace_grade(grade2);
+                    }
+                    grades.push_back(grade2);
+                }
+            }
+            Student student(name, grades);
+            student.calculate_average_grade();
+            students.push_back(student);
+        }
+        Group group(group_id, number_of_students, students);
+        group.calculate_average_grade();
+        groups.push_back(group);
+    }
+}
+
+//function to write to file
+void write_to_file(vector<Group> groups)
+{
+    ofstream out("output.txt");
+    if (out.is_open())
+    {
+        for (int i = 0; i < groups.size(); i++)
+        {
+            out << "Group id: " << groups[i].get_group_id() << endl;
+            out << "Number of students: " << groups[i].get_number_of_students() << endl;
+            out << "Average grade of group: " << groups[i].get_average_grade() << endl;
+            for (int j = 0; j < groups[i].get_number_of_students(); j++)
+            {
+                out << "Last name: " << groups[i].get_students()[j].get_name() << endl;
+                out << "Grades: ";
+                for (int k = 0; k < 3; k++)
+                {
+                    out << groups[i].get_students()[j].get_grades()[k] << " ";
+                }
+                out << endl;
+                out << "Average grade: " << groups[i].get_students()[j].get_average_grade() << endl;
+            }
+            out << endl;
+        }
+    }
+    else
+    {
+        cout << "File is not open." << endl;
+    }
+    out.close();
+}
+
+//function to write to console
+void write_to_console(vector<Group> groups)
+{
+    for (int i = 0; i < groups.size(); i++)
+    {
+        cout << "Group id: " << groups[i].get_group_id() << endl;
+        cout << "Number of students: " << groups[i].get_number_of_students() << endl;
+        cout << "Average grade of group: " << groups[i].get_average_grade() << endl;
+        for (int j = 0; j < groups[i].get_number_of_students(); j++)
+        {
+            cout << "Last name: " << groups[i].get_students()[j].get_name() << endl;
+            cout << "Grades: ";
+            for (int k = 0; k < 3; k++)
+            {
+                cout << groups[i].get_students()[j].get_grades()[k] << " ";
+            }
+            cout << endl;
+            cout << "Average grade: " << groups[i].get_students()[j].get_average_grade() << endl;
+        }
+        cout << endl;
+    }
 }
 
 int main()
 {
-    SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);
     while (true) {
-        vector<GradeData> gradeDatas;
-        string str;
-        int id;
-        if (answer()) {
-            ifstream in("input.txt");
-            if (!in.is_open()) {
-                cout << "File not found" << endl;
-                return 1;
-            }
-            while (getline(in, str)) {
-                if (checkInput(str)) {
-                    //input id of group
-                    id = answer5();
-                    stringstream ss(str);                    
-                    string name;
-                    ss >> name;
-                    vector<int> grades;
-                    int grade;
-                    while (ss >> grade) {
-                        grades.push_back(grade);
-                    }
-                    gradeDatas.emplace_back(name, grades);
-                }
-            }
-            in.close();
+        vector<Group> groups;
+        string answer;
+        cout << "Do you want to read from file? (y/n): ";
+        cin >> answer;
+        if (answer == "y") {
+            read_from_file(groups);
+        } else if (answer == "n") {
+            read_from_console(groups);
         } else {
-            //enter id of group
-            id = answer4();
-            cout << "Enter the number of students" << endl;
-            int n;
-            cin >> n;
-            cin.ignore();
-            for (int i = 0; i < n; i++) {
-                while (true) {
-                    cout << "Enter the name and grades of the student" << endl;
-                    getline(cin, str);
-                    if (checkInput(str)) {
-                        stringstream ss(str);
-                        string name;
-                        ss >> name;
-                        vector<int> grades;
-                        int grade;
-                        while (ss >> grade) {
-                            grades.push_back(grade);
-                        }
-                        gradeDatas.emplace_back(name, grades);
-                        break;
-                    } else {
-                        cout << "Incorrect input" << endl;
-                    }
-                }
-            }
+            cout << "Incorrect answer. Try again." << endl;
+            return 0;
         }
-        if (answer2()) {
-            ofstream out("output.txt");
-            out << "Group " << id << endl;
-            for (auto & gradeData : gradeDatas) {
-                out << gradeData << "Average grade : " << gradeData.getAverageGrade() << endl;
-            }
-            out << "Average grade of the group : " << getAverageGrade(gradeDatas) << endl;
-            out.close();
+        cout << "Do you want to write to file? (y/n): ";
+        cin >> answer;
+        if (answer == "y") {
+            write_to_file(groups);
+        } else if (answer == "n") {
+            write_to_console(groups);
         } else {
-            cout << "id of group : " << id << endl;
-            for (auto & gradeData : gradeDatas) {
-                cout << gradeData << "Average grade : " << gradeData.getAverageGrade() << endl;
-            }
-            cout << "Average grade of the group : " << getAverageGrade(gradeDatas) << endl;
+            cout << "Incorrect answer. Try again." << endl;
+            return 0;
         }
-
-        if (!answer3()) {
+        cout << "Do you want to continue? (y/n): ";
+        cin >> answer;
+        while (answer != "y" && answer != "n") {
+            cout << "Incorrect answer. Try again." << endl;
+            cin >> answer;
+        }
+        if (answer == "n") {
             break;
         }
     }
